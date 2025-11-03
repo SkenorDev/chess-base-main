@@ -44,6 +44,6 @@ private:
     Player* ownerAt(int x, int y) const;
     void FENtoBoard(const std::string& fen);
     char pieceNotation(int x, int y) const;
-
+    void placePiece(int pos, char input);
     Grid* _grid;
 };
