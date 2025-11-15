@@ -51,25 +51,7 @@ void Chess::setUpBoard()
 
     startGame();
 }
-   //EX: setup bishop in bottom left +1 +1
-    //  Bit *bit = new Bit();
-    // std::string spritePath = std::string("") + (0 == 0 ? "w_" : "b_") + "bishop.png";
-    // bit->LoadTextureFromFile(spritePath.c_str());
-    // bit->setPosition(_grid->getSquare(1,1)->getPosition());
-    //    bit->setOwner(getPlayerAt(0));
-    // bit->setSize(pieceSize, pieceSize);
-    // _grid->getSquare(1,1)->setBit(bit);
 
-    // convert a FEN string to a board
-    // FEN is a space delimited string with 6 fields
-    // 1: piece placement (from white's perspective)
-    // NOT PART OF THIS ASSIGNMENT BUT OTHER THINGS THAT CAN BE IN A FEN STRING
-    // ARE BELOW
-    // 2: active color (W or B)
-    // 3: castling availability (KQkq or -)
-    // 4: en passant target square (in algebraic notation, or -)
-    // 5: halfmove clock (number of halfmoves since the last capture or pawn advance)
-    //FENtoBoard("rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR");
 void Chess::FENtoBoard(const std::string& fen) {
     int boardIndex=0;
     for (int i=0;i<fen.length();i++){
@@ -81,7 +63,6 @@ void Chess::FENtoBoard(const std::string& fen) {
         //convert into corelating int
         int skip = current-'0';
         if(skip>0&&skip<9){
-             printf("%d \n",skip);
             boardIndex+=skip;
             continue;
         }
@@ -89,15 +70,7 @@ void Chess::FENtoBoard(const std::string& fen) {
         placePiece(boardIndex,current);
         boardIndex++;
         }
-        else{
-            if(current=='B'|| current == 'b') {
-                _gameOptions.currentTurnNo=1;
-            }
-            if(current=='W'|| current == 'w') {
-                _gameOptions.currentTurnNo=0;
-            }
-        }
-    }
+     }
 }
 void Chess::placePiece(int pos, char input) {
     int player = 0;
@@ -105,12 +78,19 @@ void Chess::placePiece(int pos, char input) {
         player = 1;
         }
      Bit *bit = new Bit();
-    std::string spritePath = std::string("") + (player == 0 ? "w_" : "b_") + "bishop.png";
+     std::string spritePath;
+    if(input=='b'||input=='B') spritePath = std::string("") + (player == 0 ? "w_" : "b_") + "bishop.png";
+    if(input=='p'||input=='P') spritePath = std::string("") + (player == 0 ? "w_" : "b_") + "pawn.png";
+    if(input=='r'||input=='R') spritePath = std::string("") + (player == 0 ? "w_" : "b_") + "rook.png";
+     if(input=='n'||input=='N') spritePath = std::string("") + (player == 0 ? "w_" : "b_") + "knight.png";
+    if(input=='q'||input=='Q') spritePath = std::string("") + (player == 0 ? "w_" : "b_") + "queen.png";
+    if(input=='k'||input=='K') spritePath = std::string("") + (player == 0 ? "w_" : "b_") + "king.png";
     bit->LoadTextureFromFile(spritePath.c_str());
     bit->setPosition(_grid->getSquare(pos%8,pos/8)->getPosition());
     bit->setOwner(getPlayerAt(player));
     bit->setSize(pieceSize, pieceSize);
     _grid->getSquare(pos%8,pos/8)->setBit(bit);
+
 }
  
 
