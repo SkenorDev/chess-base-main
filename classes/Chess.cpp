@@ -48,7 +48,6 @@ void Chess::setUpBoard()
     _grid->initializeChessSquares(pieceSize, "boardsquare.png");
     FENtoBoard("rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR");
     //FENtoBoard("rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1");
-
     startGame();
 }
 
@@ -78,6 +77,20 @@ void Chess::placePiece(int pos, char input) {
         player = 1;
         }
      Bit *bit = new Bit();
+     int tag = 0;
+     switch (tolower(input)) {
+        case 'p': tag = 1; break;
+        case 'n': tag = 2; break;
+        case 'b': tag = 3; break;
+        case 'r': tag = 4; break;
+        case 'q': tag = 5; break;
+        case 'k': tag = 6; break;
+    }
+
+    if (player == 1)
+        tag += 128;
+
+    bit->setGameTag(tag);
      std::string spritePath;
     if(input=='b'||input=='B') spritePath = std::string("") + (player == 0 ? "w_" : "b_") + "bishop.png";
     if(input=='p'||input=='P') spritePath = std::string("") + (player == 0 ? "w_" : "b_") + "pawn.png";
@@ -89,6 +102,7 @@ void Chess::placePiece(int pos, char input) {
     bit->setPosition(_grid->getSquare(pos%8,pos/8)->getPosition());
     bit->setOwner(getPlayerAt(player));
     bit->setSize(pieceSize, pieceSize);
+    // printf("%d",bit->getEntityType());
     _grid->getSquare(pos%8,pos/8)->setBit(bit);
 
 }
@@ -105,13 +119,128 @@ bool Chess::canBitMoveFrom(Bit &bit, BitHolder &src)
     // need to implement friendly/unfriendly in bit so for now this hack
     int currentPlayer = getCurrentPlayer()->playerNumber() * 128;
     int pieceColor = bit.gameTag() & 128;
-    if (pieceColor == currentPlayer) return true;
-    return false;
+    int tag = bit.gameTag();
+    int pieceType = tag & 0x7F;
+    
+     return true;
 }
 
 bool Chess::canBitMoveFromTo(Bit &bit, BitHolder &src, BitHolder &dst)
 {
-    return true;
+    ChessSquare* srcxy = static_cast<ChessSquare*>(&src);
+    ChessSquare* dstxy = static_cast<ChessSquare*>(&dst);
+     int srcx = srcxy->getColumn();
+    int srcy = srcxy->getRow();
+         int dstx =dstxy->getColumn();
+    int dsty = dstxy->getRow();
+    int player = getCurrentPlayer()->playerNumber();
+    //White pawn
+    if(bit.gameTag()==1&&player==0){
+        printf("%d %d \n",dstx, dsty);
+        if (dstx==srcx){
+             if (srcy==6&&dsty==4&& getHolderAt(srcx,srcy-2).bit()==NULL){
+                return true;
+            }
+            if (srcy-1==dsty&& getHolderAt(srcx,srcy-1).bit()==NULL){
+                return true;
+            }      
+    }
+             if (dstx == srcx - 1 && srcx != 0) {
+        Bit* target = getHolderAt(dstx, dsty).bit();
+        if (target != NULL && target->gameTag() > 8) { 
+            return true;
+        }
+            }
+            if (dstx == srcx + 1 && srcx != 7) {
+        Bit* target = getHolderAt(dstx, dsty).bit();
+        if (target != NULL && target->gameTag() > 8) {
+            return true;
+        }
+    }
+    }
+    //Black Pawn
+    if(bit.gameTag()==129&&player==1){
+        if (dstx==srcx){
+             if (srcy==1&&dsty==3&& getHolderAt(srcx,srcy+2).bit()==NULL){
+                return true;
+            }
+            if (srcy+1==dsty&& getHolderAt(srcx,srcy+1).bit()==NULL){
+                return true;
+            }      
+    }
+           if (dstx == srcx - 1 && srcx != 0) {
+        Bit* target = getHolderAt(dstx, dsty).bit();
+        if (target != NULL && target->gameTag() < 8) { 
+            return true;
+        }
+            }
+            if (dstx == srcx + 1 && srcx != 7) {
+        Bit* target = getHolderAt(dstx, dsty).bit();
+        if (target != NULL && target->gameTag() < 8) {
+            return true;
+        }
+    }
+            
+    }
+    //White Knight
+    if(bit.gameTag()==2&&player==0){
+        Bit* target = getHolderAt(dstx, dsty).bit();
+        if (target != NULL && target->gameTag() < 9) {
+            return false;
+        }
+    if(srcx + 1 == dstx && srcy + 2 == dsty) return true;
+if(srcx - 1 == dstx && srcy + 2 == dsty) return true;
+if(srcx + 2 == dstx && srcy + 1 == dsty) return true;
+if(srcx + 2 == dstx && srcy - 1 == dsty) return true;
+if(srcx - 2 == dstx && srcy + 1 == dsty) return true;
+if(srcx - 2 == dstx && srcy - 1 == dsty) return true;
+if(srcx + 1 == dstx && srcy - 2 == dsty) return true;
+if(srcx - 1 == dstx && srcy - 2 == dsty) return true;
+    }
+      //Black Knight
+    if(bit.gameTag()==130&&player==1){
+        Bit* target = getHolderAt(dstx, dsty).bit();
+        if (target != NULL && target->gameTag() > 9) {
+            return false;
+        }
+if(srcx + 1 == dstx && srcy + 2 == dsty) return true;
+if(srcx - 1 == dstx && srcy + 2 == dsty) return true;
+if(srcx + 2 == dstx && srcy + 1 == dsty) return true;
+if(srcx + 2 == dstx && srcy - 1 == dsty) return true;
+if(srcx - 2 == dstx && srcy + 1 == dsty) return true;
+if(srcx - 2 == dstx && srcy - 1 == dsty) return true;
+if(srcx + 1 == dstx && srcy - 2 == dsty) return true;
+if(srcx - 1 == dstx && srcy - 2 == dsty) return true;
+    }
+    if(bit.gameTag()==6&&player==0){
+                Bit* target = getHolderAt(dstx, dsty).bit();
+        if (target != NULL && target->gameTag() < 9) {
+            return false;
+        }
+        if(srcx+1==dstx) return true;
+         if(srcx-1==dstx) return true;
+          if(srcy+1==dsty) return true;
+           if(srcy-1==dsty) return true;
+            if(srcx+1==dstx&&srcy+1==dsty) return true;
+             if(srcx+1==dstx&&srcy-1==dsty) return true;
+            if(srcx-1==dstx&&srcy+1==dsty) return true;
+             if(srcx-1==dstx&&srcy-1==dsty) return true;
+    }
+        if(bit.gameTag()==134&&player==1){
+                Bit* target = getHolderAt(dstx, dsty).bit();
+        if (target != NULL && target->gameTag() > 9) {
+            return false;
+        }
+                if(srcx+1==dstx) return true;
+         if(srcx-1==dstx) return true;
+          if(srcy+1==dsty) return true;
+           if(srcy-1==dsty) return true;
+            if(srcx+1==dstx&&srcy+1==dsty) return true;
+             if(srcx+1==dstx&&srcy-1==dsty) return true;
+            if(srcx-1==dstx&&srcy+1==dsty) return true;
+             if(srcx-1==dstx&&srcy-1==dsty) return true;
+    }
+    return false;
 }
 
 void Chess::stopGame()

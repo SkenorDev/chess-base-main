@@ -4,17 +4,7 @@
 #include <intrin.h>
 #endif
 #include <iostream>
-
-enum ChessPiece
-{
-    NoPiece,
-    Pawn,
-    Knight,
-    Bishop,
-    Rook,
-    Queen,
-    King
-};
+#include "Chess.h"
 
 class BitboardElement {
   public:
