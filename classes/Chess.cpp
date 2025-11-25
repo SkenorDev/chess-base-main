@@ -127,6 +127,20 @@ bool Chess::canBitMoveFrom(Bit &bit, BitHolder &src)
      return true;
 }
 
+
+
+
+/*
+vector<BitMove> getAllMoves(Bit &bit){
+
+read fenNotation and generate bitboard
+
+for all your pieces, getfriendlypieces(), generate moves depenind what it is and if its valid
+read bitboard and generate all moves for that piece
+}
+
+*/
+
 bool Chess::canBitMoveFromTo(Bit &bit, BitHolder &src, BitHolder &dst)
 {
     
@@ -158,12 +172,14 @@ bool Chess::canBitMoveFromTo(Bit &bit, BitHolder &src, BitHolder &dst)
         });
 
         int fromSquare = srcSquare->getSquareIndex();
-        BitBoard knightBoard(1ULL << fromSquare);
+        BitBoard knightBoard(1ULL << fromSquare); //where whatever piece is located
         uint64_t validTargets = ~friendlyPieces; 
 
         std::vector<BitMove> moves;
         generateKnightMoves(moves, knightBoard, validTargets);
 
+
+        //geneateQueenmoves
         int toSquare = dstSquare->getSquareIndex();
         for (const BitMove& move : moves) {
             if (move.to == toSquare) {
