@@ -1,7 +1,7 @@
 {
 	"InstallScripts" : 
 	[
-		"C:/Users/Nathan Skinner/Documents/GitHub/chess-base-main/build/cmake_install.cmake"
+		"/Users/nathanskinner/Downloads/chess-base-main/build/cmake_install.cmake"
 	],
 	"Parallel" : false
 }
