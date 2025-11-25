@@ -15,12 +15,12 @@ Rook,
 Queen,
 King
 };
-class BitboardElement {
+class BitBoard {
   public:
     // Constructors
-    BitboardElement()
+    BitBoard()
         : _data(0) { }
-    BitboardElement(uint64_t data)
+    BitBoard(uint64_t data)
         : _data(data) { }
 
     // Getters and Setters
@@ -39,9 +39,18 @@ class BitboardElement {
             }
         }
     }
-
-    BitboardElement& operator|=(const uint64_t other) {
+    BitBoard& operator|=(const uint64_t other) {
         _data |= other;
+        return *this;
+    }
+
+    BitBoard& operator&=(const uint64_t other) {
+        _data &= other;
+        return *this;
+    }
+
+    BitBoard& operator^=(const uint64_t other) {
+        _data ^= other;
         return *this;
     }
 

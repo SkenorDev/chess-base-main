@@ -1,4 +1,6 @@
 #include "Chess.h"
+#include "MagicBitboards.h"
+#include "BitBoard.h"
 #include <limits>
 #include <cmath>
 
@@ -188,3 +190,12 @@ void Chess::setStateString(const std::string &s)
         }
     });
 }
+// Generate actual move objects from a bitboard
+void Chess::generateKnightMoves(std::vector<BitMove>& moves, BitBoard knightBoard, uint64_t occupancy) {
+knightBoard.forEachBit([&](int fromSquare) {
+BitBoard moveBitboard = BitBoard(KnightAttacks[fromSquare] & occupancy);
+// Efficiently iterate through only the set bits
+moveBitboard.forEachBit([&](int toSquare) {
+moves.emplace_back(fromSquare, toSquare, Knight);
+});
+});

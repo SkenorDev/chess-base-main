@@ -2,7 +2,7 @@
 
 #include "Game.h"
 #include "Grid.h"
-
+#include "BitBoard.h"
 constexpr int pieceSize = 80;
 
 enum ChessPiece
@@ -36,7 +36,7 @@ public:
     std::string initialStateString() override;
     std::string stateString() override;
     void setStateString(const std::string &s) override;
-
+    void Chess::generateKnightMoves(std::vector<BitMove>& moves, BitBoard knightBoard, uint64_t occupancy);
     Grid* getGrid() override { return _grid; }
 
 private:
