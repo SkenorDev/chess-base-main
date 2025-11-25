@@ -1,20 +1,10 @@
 #pragma once
 
+#include "ChessPiece.h"
 #include "Game.h"
 #include "Grid.h"
 #include "BitBoard.h"
 constexpr int pieceSize = 80;
-
-enum ChessPiece
-{
-    NoPiece,
-    Pawn,
-    Knight,
-    Bishop,
-    Rook,
-    Queen,
-    King
-};
 
 class Chess : public Game
 {
@@ -36,7 +26,7 @@ public:
     std::string initialStateString() override;
     std::string stateString() override;
     void setStateString(const std::string &s) override;
-    void Chess::generateKnightMoves(std::vector<BitMove>& moves, BitBoard knightBoard, uint64_t occupancy);
+    void generateKnightMoves(std::vector<BitMove>& moves, BitBoard knightBoard, uint64_t occupancy);
     Grid* getGrid() override { return _grid; }
     
 

@@ -130,8 +130,53 @@ bool Chess::canBitMoveFrom(Bit &bit, BitHolder &src)
 bool Chess::canBitMoveFromTo(Bit &bit, BitHolder &src, BitHolder &dst)
 {
     
+    ChessSquare* srcSquare = dynamic_cast<ChessSquare*>(&src);
+    ChessSquare* dstSquare = dynamic_cast<ChessSquare*>(&dst);
+
+    if (!srcSquare || !dstSquare) {
+        return false;
+    }
+    int pieceType = bit.gameTag() & 0x7F;
+    if (pieceType == Knight){
+       
+        int currentPlayer = getCurrentPlayer()->playerNumber();
+        uint64_t friendlyPieces = 0ULL; // Bitboard of friendly pieces 
+
+
+        //get all friendly pieces
+        _grid->forEachSquare([&](ChessSquare* square, int x, int y) {
+            Bit *b = square->bit();
+            if (b)
+            {
+                int tag = b->gameTag();
+                int piecePlayer = (tag & 128) ? 1 : 0; 
+                if (piecePlayer == currentPlayer) {
+                    friendlyPieces |= (1ULL << square->getSquareIndex());
+                }
+            }
+
+        });
+
+        int fromSquare = srcSquare->getSquareIndex();
+        BitBoard knightBoard(1ULL << fromSquare);
+        uint64_t validTargets = ~friendlyPieces; 
+
+        std::vector<BitMove> moves;
+        generateKnightMoves(moves, knightBoard, validTargets);
+
+        int toSquare = dstSquare->getSquareIndex();
+        for (const BitMove& move : moves) {
+            if (move.to == toSquare) {
+                return true;
+            }
+        }
+        return false;
+    }
     return false;
 }
+
+
+
 
 void Chess::stopGame()
 {
@@ -192,11 +237,11 @@ void Chess::setStateString(const std::string &s)
 }
 // Generate actual move objects from a bitboard
 void Chess::generateKnightMoves(std::vector<BitMove>& moves, BitBoard knightBoard, uint64_t occupancy) {
-knightBoard.forEachBit([&](int fromSquare) {
-BitBoard moveBitboard = BitBoard(KnightAttacks[fromSquare] & occupancy);
-// Efficiently iterate through only the set bits
-moveBitboard.forEachBit([&](int toSquare) {
-moves.emplace_back(fromSquare, toSquare, Knight);
-});
-
-});
+    knightBoard.forEachBit([&](int fromSquare) {
+        BitBoard moveBitboard = BitBoard(KnightAttacks[fromSquare] & occupancy);
+        // Efficiently iterate through only the set bits
+        moveBitboard.forEachBit([&](int toSquare) {
+            moves.emplace_back(fromSquare, toSquare, Knight);
+        });
+    });
+}

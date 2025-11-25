@@ -4,17 +4,8 @@
 #include <intrin.h>
 #endif
 #include <iostream>
-#include "Chess.h"
-enum ChessPieces
-{
-NoPiece,
-Pawn,
-Knight,
-Bishop,
-Rook,
-Queen,
-King
-};
+#include "ChessPiece.h"
+
 class BitBoard {
   public:
     // Constructors
