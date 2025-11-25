@@ -38,6 +38,7 @@ public:
     void setStateString(const std::string &s) override;
     void Chess::generateKnightMoves(std::vector<BitMove>& moves, BitBoard knightBoard, uint64_t occupancy);
     Grid* getGrid() override { return _grid; }
+    
 
 private:
     Bit* PieceForPlayer(const int playerNumber, ChessPiece piece);

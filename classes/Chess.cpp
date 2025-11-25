@@ -198,4 +198,5 @@ BitBoard moveBitboard = BitBoard(KnightAttacks[fromSquare] & occupancy);
 moveBitboard.forEachBit([&](int toSquare) {
 moves.emplace_back(fromSquare, toSquare, Knight);
 });
+
 });
